@@ -9,7 +9,11 @@
  * @details Esta función inicializa una cola vacía. 
  */
 Queue queue_create(){
-
+    Queue q;
+    q.head = 0;
+    q.tail = 0;
+    q.len = 0;
+    return q;
 }
 
 /**
@@ -20,7 +24,11 @@ Queue queue_create(){
  * @details Esta función añade el dato `d` al final de la cola.
  */
 void queue_enqueue(Queue* q, Data d){
-
+    if (q->len < TAM) {
+        q->datos[q->tail] = d;
+        q->tail = (q->tail + 1) % TAM;
+        q->len++;
+    }
 }
 
 /**
@@ -33,7 +41,13 @@ void queue_enqueue(Queue* q, Data d){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_dequeue(Queue* q){
-
+    if (q->len > 0) {
+        Data d = q->datos[q->head];
+        q->head = (q->head + 1) % TAM;
+        q->len--;
+        return d;
+    }
+    return -1;
 }
 
 /**
@@ -45,7 +59,7 @@ Data queue_dequeue(Queue* q){
  *          como `queue_dequeue` en una cola vacía.
  */
 bool queue_is_empty(Queue* q){
-
+    return q->len == 0;
 }
 
 /**
@@ -57,7 +71,10 @@ bool queue_is_empty(Queue* q){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_front(Queue* q){
-
+    if (q->len > 0) {
+        return q->datos[q->head];
+    }
+    return -1;
 }
 
 /**
@@ -67,6 +84,8 @@ Data queue_front(Queue* q){
  * @details Esta función hace que los índices head y tail tomen el valor de -1
  */
 void queue_empty(Queue* q){
-
+    q->head = 0;
+    q->tail = 0;
+    q->len = 0;
 }
 

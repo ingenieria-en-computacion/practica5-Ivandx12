@@ -1,6 +1,6 @@
 #ifndef __STACK_H__
 #define __STACK_H__
-
+#include <stdio.h>
 #include <stdbool.h>
 typedef int Data;
 #define TAM 100

@@ -9,7 +9,16 @@
  * @details Esta función inicializa una cola vacía. Asigna memoria dinàmica con malloc al arreglo data usando len
  */
 Queue queue_create(int len){
-
+    Queue q;
+    q.data = (Data*)malloc(len * sizeof(Data));
+    if (q.data == NULL) {
+        q.len = 0;
+    } else {
+        q.head = 0;
+        q.tail = 0;
+        q.len = len;
+    }
+    return q;
 }
 
 /**
@@ -20,9 +29,11 @@ Queue queue_create(int len){
  * @details Esta función añade el dato `d` al final de la cola.
  */
 void queue_enqueue(Queue* q, Data d){
-
+if (q && q->len > 0 && (q->tail + 1) % q->len != q->head) {
+    q->data[q->tail] = d;
+    q->tail = (q->tail + 1) % q->len;
 }
-
+}
 /**
  * Elimina y devuelve el elemento al frente de la cola.
  * 
@@ -33,7 +44,12 @@ void queue_enqueue(Queue* q, Data d){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_dequeue(Queue* q){
-
+    if (q && q->len > 0 && q->head != q->tail) {
+        Data d = q->data[q->head];
+        q->head = (q->head + 1) % q->len;
+        return d;
+    }
+    return -1;
 }
 
 /**
@@ -45,7 +61,7 @@ Data queue_dequeue(Queue* q){
  *          como `queue_dequeue` en una cola vacía.
  */
 bool queue_is_empty(Queue* q){
-
+    return q && q->head == q->tail;
 }
 
 /**
@@ -57,7 +73,10 @@ bool queue_is_empty(Queue* q){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_front(Queue* q){
-
+    if (q && q->len > 0 && q->head != q->tail) {
+        return q->data[q->head];
+    }
+    return -1;
 }
 
 /**
@@ -67,7 +86,10 @@ Data queue_front(Queue* q){
  * @details Esta función hace que los índices head y tail tomen el valor de -1
  */
 void queue_empty(Queue* q){
-
+    if (q) {
+        q->head = 0;
+        q->tail = 0;
+    }
 }
 
 /**
@@ -79,5 +101,11 @@ void queue_empty(Queue* q){
  *          de ser eliminada.
  */
 void queue_delete(Queue* q){
-
+    if (q && q->data) {
+        free(q->data);
+        q->data = NULL;
+        q->head = 0;
+        q->tail = 0;
+        q->len = 0;
+    }
 }
